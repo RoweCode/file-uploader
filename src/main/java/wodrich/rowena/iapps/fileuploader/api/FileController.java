@@ -4,19 +4,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import wodrich.rowena.iapps.fileuploader.api.responses.FileUploadResponse;
-import wodrich.rowena.iapps.fileuploader.validation.XMLValidator;
+import wodrich.rowena.iapps.fileuploader.domain.dto.FileData;
+import wodrich.rowena.iapps.fileuploader.services.FileDeSerializationService;
+import wodrich.rowena.iapps.fileuploader.services.FileStorageService;
+import wodrich.rowena.iapps.fileuploader.validation.FileValidator;
+import wodrich.rowena.iapps.fileuploader.validation.XMLFileValidator;
 
-import java.io.File;
+import java.io.IOException;
 
 
 @RestController
 public class FileController {
 
-    private final XMLValidator xmlValidator;
+    private final FileValidator fileValidator;
+    private final FileDeSerializationService fileDeSerializationService;
+    private final FileStorageService fileStorageService;
 
     @Autowired
-    public FileController(XMLValidator xmlValidator) {
-        this.xmlValidator = xmlValidator;
+    public FileController(FileValidator fileValidator, FileDeSerializationService fileDeSerializationService, FileStorageService fileStorageService) {
+        this.fileValidator = fileValidator;
+        this.fileDeSerializationService = fileDeSerializationService;
+        this.fileStorageService = fileStorageService;
     }
 
     @GetMapping("files/pages/{pageNumber}")
@@ -26,8 +34,17 @@ public class FileController {
 
     @PostMapping("files")
     public FileUploadResponse uploadFile(@RequestParam("file") MultipartFile file) {
-        boolean isValid = xmlValidator.isValidAgainstXSDSchema(file, XMLValidator.EPAPER_REQUEST_XSD_SCHEMA_PATH);
-        return isValid ? new FileUploadResponse(true)
-                : new FileUploadResponse(false, "validation");
+        boolean isValid = fileValidator.isValidAgainstSchema(file, XMLFileValidator.EPAPER_REQUEST_XSD_SCHEMA_PATH);
+        if (!isValid) {
+            return new FileUploadResponse(false, "validation");
+        }
+        FileData fileData;
+        try {
+            fileData = fileDeSerializationService.getFileData(file.getOriginalFilename(), file.getBytes());
+        } catch (IOException e) {
+            return new FileUploadResponse(false, "internal");
+        }
+        fileStorageService.storeFileDate(fileData);
+        return new FileUploadResponse(true);
     }
 }

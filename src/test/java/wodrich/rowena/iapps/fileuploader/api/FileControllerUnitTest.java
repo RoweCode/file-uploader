@@ -13,13 +13,16 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.multipart.MultipartFile;
-import wodrich.rowena.iapps.fileuploader.validation.XMLValidator;
+import wodrich.rowena.iapps.fileuploader.domain.dto.FileData;
+import wodrich.rowena.iapps.fileuploader.services.FileDeSerializationService;
+import wodrich.rowena.iapps.fileuploader.services.FileStorageService;
+import wodrich.rowena.iapps.fileuploader.validation.FileValidator;
+import wodrich.rowena.iapps.fileuploader.validation.XMLFileValidator;
 
 import java.io.File;
 import java.nio.file.Files;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -34,7 +37,13 @@ class FileControllerUnitTest {
     MockMvc mockMvc;
 
     @MockBean
-    XMLValidator xmlValidator;
+    FileValidator fileValidator;
+
+    @MockBean
+    FileDeSerializationService fileDeSerializationService;
+
+    @MockBean
+    FileStorageService fileStorageService;
 
     @Test
     void testGetFilesWithPaginationSuccess() throws Exception {
@@ -46,9 +55,9 @@ class FileControllerUnitTest {
 
     @Test
     void testUploadValidFileSuccess() throws Exception {
-        when(xmlValidator.isValidAgainstXSDSchema(
+        when(fileValidator.isValidAgainstSchema(
                 any(MultipartFile.class),
-                eq(XMLValidator.EPAPER_REQUEST_XSD_SCHEMA_PATH)))
+                eq(XMLFileValidator.EPAPER_REQUEST_XSD_SCHEMA_PATH)))
                 .thenReturn(true);
 
         File resource = new ClassPathResource("testFiles/" + VALID_TEST_FILE_XML).getFile();
@@ -57,6 +66,9 @@ class FileControllerUnitTest {
                 = new MockMultipartFile("file", VALID_TEST_FILE_XML,
                 MediaType.TEXT_PLAIN_VALUE, fileBytes);
 
+        when(fileDeSerializationService.getFileData(
+                anyString(), eq(fileBytes))).thenReturn(new FileData());
+
         mockMvc.perform(multipart("/files").file(file))
                 .andExpect(status().isOk())
                 .andExpect(content().json("{\"success\":true}"));
@@ -64,9 +76,9 @@ class FileControllerUnitTest {
 
     @Test
     void testUploadValidFile_ValidationFails() throws Exception {
-        when(xmlValidator.isValidAgainstXSDSchema(
+        when(fileValidator.isValidAgainstSchema(
                 any(MultipartFile.class),
-                eq(XMLValidator.EPAPER_REQUEST_XSD_SCHEMA_PATH)))
+                eq(XMLFileValidator.EPAPER_REQUEST_XSD_SCHEMA_PATH)))
                 .thenReturn(false);
 
         File resource = new ClassPathResource("testFiles/" + VALID_TEST_FILE_XML).getFile();

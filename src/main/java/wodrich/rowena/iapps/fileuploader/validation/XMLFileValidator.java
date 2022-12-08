@@ -14,16 +14,16 @@ import java.io.File;
 import java.io.IOException;
 
 @Component
-public class XMLValidator {
+public class XMLFileValidator implements FileValidator {
 
     public final static String EPAPER_REQUEST_XSD_SCHEMA_PATH = "xsdSchemas/epaperRequest.xsd";
 
-    public XMLValidator() {}
+    public XMLFileValidator() {}
 
-    public boolean isValidAgainstXSDSchema(MultipartFile file, String xsdSchemaPath) {
+    public boolean isValidAgainstSchema(MultipartFile file, String schemaPath) {
         SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         try {
-            File xsd = new ClassPathResource(xsdSchemaPath).getFile();
+            File xsd = new ClassPathResource(schemaPath).getFile();
             Schema schema = factory.newSchema(xsd);
             Validator validator = schema.newValidator();
             validator.validate(new StreamSource(file.getInputStream()));
