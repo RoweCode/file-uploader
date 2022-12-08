@@ -1,12 +1,12 @@
-package wodrich.rowena.iapps.fileuploader.services;
+package wodrich.rowena.iapps.fileuploader.deserialization;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.springframework.stereotype.Service;
-import wodrich.rowena.iapps.fileuploader.domain.dto.FileData;
-import wodrich.rowena.iapps.fileuploader.domain.dto.Newspaper;
-import wodrich.rowena.iapps.fileuploader.domain.dto.Screen;
-import wodrich.rowena.iapps.fileuploader.domain.xml.EpaperRequest;
-import wodrich.rowena.iapps.fileuploader.domain.xml.ScreenInfo;
+import wodrich.rowena.iapps.fileuploader.deserialization.xml.EpaperRequest;
+import wodrich.rowena.iapps.fileuploader.deserialization.xml.ScreenInfo;
+import wodrich.rowena.iapps.fileuploader.domain.FileData;
+import wodrich.rowena.iapps.fileuploader.domain.Newspaper;
+import wodrich.rowena.iapps.fileuploader.domain.Screen;
 
 import java.io.IOException;
 import java.time.ZonedDateTime;

@@ -1,4 +1,4 @@
-package wodrich.rowena.iapps.fileuploader.domain.dto;
+package wodrich.rowena.iapps.fileuploader.domain;
 
 import javax.persistence.*;
 

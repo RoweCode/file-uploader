@@ -1,4 +1,4 @@
-package wodrich.rowena.iapps.fileuploader.domain.xml;
+package wodrich.rowena.iapps.fileuploader.deserialization.xml;
 
 public class EpaperRequest {
 

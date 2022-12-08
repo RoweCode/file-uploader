@@ -1,10 +1,11 @@
-package wodrich.rowena.iapps.fileuploader.services;
+package wodrich.rowena.iapps.fileuploader.deserialization;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import wodrich.rowena.iapps.fileuploader.domain.xml.EpaperRequest;
+import wodrich.rowena.iapps.fileuploader.deserialization.XMLFileDeSerializationService;
+import wodrich.rowena.iapps.fileuploader.deserialization.xml.EpaperRequest;
 
 import java.io.File;
 import java.io.IOException;

@@ -1,6 +1,6 @@
-package wodrich.rowena.iapps.fileuploader.services;
+package wodrich.rowena.iapps.fileuploader.deserialization;
 
-import wodrich.rowena.iapps.fileuploader.domain.dto.FileData;
+import wodrich.rowena.iapps.fileuploader.domain.FileData;
 
 import java.io.IOException;
 
