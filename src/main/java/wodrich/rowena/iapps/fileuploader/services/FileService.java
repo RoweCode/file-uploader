@@ -1,6 +1,7 @@
 package wodrich.rowena.iapps.fileuploader.services;
 
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -14,7 +15,8 @@ import java.util.List;
 
 @Service
 public class FileService {
-
+    @Value( "${pagination.numberOfElements}" )
+    private Integer NUMBER_OF_ELEMENTS_PER_PAGE;
     private final FileRepository fileRepository;
     private final ScreenRepository screenRepository;
     private final NewspaperRepository newspaperRepository;
@@ -43,7 +45,7 @@ public class FileService {
 
     public List<FileData> getFileData(int page) {
         if (page <= 0) return null;
-        Pageable pageable = PageRequest.of(page - 1, 2);
+        Pageable pageable = PageRequest.of(page - 1, NUMBER_OF_ELEMENTS_PER_PAGE);
         return fileRepository.findAllBy(pageable);
     }
 }
