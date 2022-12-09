@@ -67,7 +67,7 @@ class FileServiceUnitTest {
                 .thenReturn(getFileDataList());
 
         // when
-        List<FileData> fileDataList = fileService.getFileData(1, null, null);
+        List<FileData> fileDataList = fileService.getFileData(1, null, null, null, null);
 
         // then
         assertNotNull(fileDataList);
@@ -80,7 +80,7 @@ class FileServiceUnitTest {
     void testGetFileData_PageNumberTooLow() {
 
         // when
-        List<FileData> fileDataList = fileService.getFileData(0, null, null);
+        List<FileData> fileDataList = fileService.getFileData(0, null, null, null, null);
 
         // then
         assertNull(fileDataList);
@@ -88,6 +88,7 @@ class FileServiceUnitTest {
 
     private List<FileData> getFileDataList() {
         List<FileData> fileDataList = new ArrayList<>();
+
         ZonedDateTime zonedDateTime = ZonedDateTime.of(2022, 2,2,
                 12,0,0,0, ZoneId.of("Europe/Berlin"));
         Screen screen = new Screen(1,2,3);

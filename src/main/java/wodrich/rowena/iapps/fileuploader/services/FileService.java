@@ -45,7 +45,7 @@ public class FileService {
         fileRepository.save(fileData);
     }
 
-    public List<FileData> getFileData(int page, String sortBy, Boolean asc) {
+    public List<FileData> getFileData(int page, String filterBy, String filter, String sortBy, Boolean asc) {
         if (page <= 0) return null;
 
         Pageable pageable;
@@ -56,6 +56,17 @@ public class FileService {
         } else {
             pageable = PageRequest.of(page - 1, NUMBER_OF_ELEMENTS_PER_PAGE);
         }
-        return fileRepository.findAllBy(pageable);
+        if (Strings.isEmpty(filterBy)) {
+            return fileRepository.findAllBy(pageable);
+        }
+
+        return switch (filterBy) {
+            case "name" -> fileRepository.findAllByName(filter, pageable);
+            case "newspaperName" -> fileRepository.findAllByNewspaper_Name(filter, pageable);
+            case "screenWidth" -> fileRepository.findAllByScreen_Width(Integer.valueOf(filter), pageable);
+            case "screenHeight" -> fileRepository.findAllByScreen_Height(Integer.valueOf(filter), pageable);
+            case "screenDpi" -> fileRepository.findAllByScreen_Dpi(Integer.valueOf(filter), pageable);
+            default -> fileRepository.findAllBy(pageable);
+        };
     }
 }
