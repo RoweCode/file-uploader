@@ -1,13 +1,13 @@
 package wodrich.rowena.iapps.fileuploader.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import wodrich.rowena.iapps.fileuploader.api.exceptions.FileDeserializationException;
 import wodrich.rowena.iapps.fileuploader.api.exceptions.ValidationException;
 import wodrich.rowena.iapps.fileuploader.api.exceptions.FileValidationException;
-import wodrich.rowena.iapps.fileuploader.api.responses.FileUploadResponse;
 import wodrich.rowena.iapps.fileuploader.deserialization.FileDeSerializationService;
 import wodrich.rowena.iapps.fileuploader.domain.FileData;
 import wodrich.rowena.iapps.fileuploader.services.FileService;
@@ -36,11 +36,17 @@ public class FileController {
     }
 
     @GetMapping("files/pages/{pageNumber}")
-    public List<FileData> getFiles(@PathVariable Integer pageNumber) {
+    public List<FileData> getFiles(
+            @PathVariable Integer pageNumber,
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false) Boolean asc) {
         if (pageNumber <= 0) {
             throw new ValidationException();
         }
-        return fileService.getFileData(pageNumber);
+        if (Strings.isNotEmpty(sortBy) && asc == null) {
+            asc = true;
+        }
+        return fileService.getFileData(pageNumber, sortBy, asc);
     }
 
     @PostMapping("files")

@@ -1,9 +1,11 @@
 package wodrich.rowena.iapps.fileuploader.services;
 
 
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import wodrich.rowena.iapps.fileuploader.domain.FileData;
 import wodrich.rowena.iapps.fileuploader.domain.Screen;
@@ -43,9 +45,17 @@ public class FileService {
         fileRepository.save(fileData);
     }
 
-    public List<FileData> getFileData(int page) {
+    public List<FileData> getFileData(int page, String sortBy, Boolean asc) {
         if (page <= 0) return null;
-        Pageable pageable = PageRequest.of(page - 1, NUMBER_OF_ELEMENTS_PER_PAGE);
+
+        Pageable pageable;
+        Sort sorting;
+        if (Strings.isNotEmpty(sortBy)) {
+            sorting = (asc == null || asc) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+            pageable = PageRequest.of(page - 1, NUMBER_OF_ELEMENTS_PER_PAGE, sorting);
+        } else {
+            pageable = PageRequest.of(page - 1, NUMBER_OF_ELEMENTS_PER_PAGE);
+        }
         return fileRepository.findAllBy(pageable);
     }
 }

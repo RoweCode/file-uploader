@@ -56,7 +56,7 @@ class FileControllerUnitTest {
     @Test
     void testGetFilesWithPaginationSuccess() throws Exception {
         List<FileData> fileDataList = getFileDataList();
-        when(fileService.getFileData(100)).thenReturn(fileDataList);
+        when(fileService.getFileData(100, null, null)).thenReturn(fileDataList);
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/files/pages/100");
         mockMvc.perform(requestBuilder)

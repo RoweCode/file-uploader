@@ -7,6 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import wodrich.rowena.iapps.fileuploader.domain.FileData;
 import wodrich.rowena.iapps.fileuploader.domain.Newspaper;
@@ -27,6 +28,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
+@TestPropertySource("classpath:application-test.properties")
 class FileServiceUnitTest {
 
     @Autowired
@@ -65,7 +67,7 @@ class FileServiceUnitTest {
                 .thenReturn(getFileDataList());
 
         // when
-        List<FileData> fileDataList = fileService.getFileData(1);
+        List<FileData> fileDataList = fileService.getFileData(1, null, null);
 
         // then
         assertNotNull(fileDataList);
@@ -78,7 +80,7 @@ class FileServiceUnitTest {
     void testGetFileData_PageNumberTooLow() {
 
         // when
-        List<FileData> fileDataList = fileService.getFileData(0);
+        List<FileData> fileDataList = fileService.getFileData(0, null, null);
 
         // then
         assertNull(fileDataList);
