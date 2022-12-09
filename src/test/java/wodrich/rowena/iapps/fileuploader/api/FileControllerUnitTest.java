@@ -15,13 +15,21 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.multipart.MultipartFile;
 import wodrich.rowena.iapps.fileuploader.deserialization.FileDeSerializationService;
 import wodrich.rowena.iapps.fileuploader.domain.FileData;
-import wodrich.rowena.iapps.fileuploader.services.FileStorageService;
+import wodrich.rowena.iapps.fileuploader.domain.Newspaper;
+import wodrich.rowena.iapps.fileuploader.domain.Screen;
+import wodrich.rowena.iapps.fileuploader.services.FileService;
 import wodrich.rowena.iapps.fileuploader.validation.FileValidator;
 import wodrich.rowena.iapps.fileuploader.validation.XMLFileValidator;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
@@ -43,14 +51,24 @@ class FileControllerUnitTest {
     FileDeSerializationService fileDeSerializationService;
 
     @MockBean
-    FileStorageService fileStorageService;
+    FileService fileService;
 
     @Test
     void testGetFilesWithPaginationSuccess() throws Exception {
+        List<FileData> fileDataList = getFileDataList();
+        when(fileService.getFileData(100)).thenReturn(fileDataList);
+
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/files/pages/100");
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
-                .andExpect(content().json("100"));
+                .andExpect(jsonPath("$", hasSize(1)));
+    }
+
+    @Test
+    void testGetFilesWithPagination_InvalidPageNumber() throws Exception {
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/files/pages/0");
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().is(417));
     }
 
     @Test
@@ -70,8 +88,7 @@ class FileControllerUnitTest {
                 anyString(), eq(fileBytes))).thenReturn(new FileData());
 
         mockMvc.perform(multipart("/files").file(file))
-                .andExpect(status().isOk())
-                .andExpect(content().json("{\"success\":true}"));
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -88,7 +105,37 @@ class FileControllerUnitTest {
                 MediaType.TEXT_PLAIN_VALUE, fileBytes);
 
         mockMvc.perform(multipart("/files").file(file))
-                .andExpect(status().isOk())
-                .andExpect(content().json("{\"success\":false, \"error\": \"validation\"}"));
+                .andExpect(status().is(417));
+    }
+
+    @Test
+    void testUploadValidFile_DeserializationFails() throws Exception {
+        when(fileValidator.isValidAgainstSchema(
+                any(MultipartFile.class),
+                eq(XMLFileValidator.EPAPER_REQUEST_XSD_SCHEMA_PATH)))
+                .thenReturn(true);
+
+        when(fileDeSerializationService.getFileData(anyString(), any()))
+                .thenThrow(IOException.class);
+
+        File resource = new ClassPathResource("testFiles/" + VALID_TEST_FILE_XML).getFile();
+        byte[] fileBytes = Files.readAllBytes(resource.toPath());
+        MockMultipartFile file
+                = new MockMultipartFile("file", VALID_TEST_FILE_XML,
+                MediaType.TEXT_PLAIN_VALUE, fileBytes);
+
+        mockMvc.perform(multipart("/files").file(file))
+                .andExpect(status().is(500));
+    }
+
+    private List<FileData> getFileDataList() {
+        List<FileData> fileDataList = new ArrayList<>();
+        ZonedDateTime zonedDateTime = ZonedDateTime.of(2022, 2,2,
+                12,0,0,0, ZoneId.of("Europe/Berlin"));
+        Screen screen = new Screen(1,2,3);
+        Newspaper newspaper = new Newspaper("taz");
+        FileData fileData = new FileData("test-1", zonedDateTime, screen, newspaper);
+        fileDataList.add(fileData);
+        return fileDataList;
     }
 }

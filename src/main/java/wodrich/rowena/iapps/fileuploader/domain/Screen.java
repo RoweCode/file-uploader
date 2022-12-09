@@ -1,5 +1,7 @@
 package wodrich.rowena.iapps.fileuploader.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
@@ -8,6 +10,7 @@ public class Screen {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     @Column(name = "id", nullable = false)
+    @JsonIgnore
     private Long id;
 
     private Integer width;
