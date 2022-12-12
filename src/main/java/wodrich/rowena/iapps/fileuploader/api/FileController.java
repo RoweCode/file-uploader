@@ -1,6 +1,5 @@
 package wodrich.rowena.iapps.fileuploader.api;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -31,9 +30,6 @@ public class FileController {
             "name", "uploadedAt", "newspaperName", "screenWidth", "screenHeight", "screenDpi"});
 
     @Autowired
-    ObjectMapper objectMapper;
-
-    @Autowired
     public FileController(FileValidator fileValidator,
                           FileDeSerializationService fileDeSerializationService,
                           FileService fileService
@@ -43,16 +39,16 @@ public class FileController {
         this.fileService = fileService;
     }
 
-    @GetMapping("files/pages/{pageNumber}")
+    @GetMapping({"files", "files/pages/{pageNumber}"})
     public List<FileData> getFiles(
-            @PathVariable Integer pageNumber,
+            @PathVariable(required = false) Integer pageNumber,
             @RequestParam(required = false) String filterBy,
             @RequestParam(required = false) String filter,
             @RequestParam(required = false) String sortBy,
             @RequestParam(required = false) Boolean asc
     ) {
-        if (pageNumber <= 0) {
-            throw new ValidationException();
+        if (pageNumber == null) {
+            pageNumber = 0;
         }
         if (Strings.isNotEmpty(filterBy)) {
             if (!filterNames.contains(filterBy) || Strings.isEmpty(filter))

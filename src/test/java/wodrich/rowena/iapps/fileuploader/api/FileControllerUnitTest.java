@@ -65,10 +65,14 @@ class FileControllerUnitTest {
     }
 
     @Test
-    void testGetFilesWithPagination_InvalidPageNumber() throws Exception {
+    void testGetFilesWithPagination_InvalidPageNumberReturnsAllFiles() throws Exception {
+        List<FileData> fileDataList = getFileDataList();
+        when(fileService.getFileData(0, null, null, null, null)).thenReturn(fileDataList);
+
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/files/pages/0");
         mockMvc.perform(requestBuilder)
-                .andExpect(status().is(417));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)));
     }
 
     @Test
@@ -105,7 +109,7 @@ class FileControllerUnitTest {
                 MediaType.TEXT_PLAIN_VALUE, fileBytes);
 
         mockMvc.perform(multipart("/files").file(file))
-                .andExpect(status().is(417));
+                .andExpect(status().is(400));
     }
 
     @Test

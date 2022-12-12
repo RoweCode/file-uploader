@@ -63,7 +63,7 @@ class FileServiceUnitTest {
 
     @Test
     void testGetFileDataSuccess() {
-        when(fileRepository.findAllBy(PageRequest.of(0, 2)))
+        when(fileRepository.findAllBy(PageRequest.of(0, 1)))
                 .thenReturn(getFileDataList());
 
         // when
@@ -77,13 +77,18 @@ class FileServiceUnitTest {
     }
 
     @Test
-    void testGetFileData_PageNumberTooLow() {
+    void testGetFileData_PageNumberTooLowReturnsAllFiles() {
+        when(fileRepository.findAllBy(null))
+                .thenReturn(getFileDataList());
 
         // when
         List<FileData> fileDataList = fileService.getFileData(0, null, null, null, null);
 
         // then
-        assertNull(fileDataList);
+        assertNotNull(fileDataList);
+        assertEquals(1, fileDataList.size());
+        assertNotNull(fileDataList.get(0).getScreen());
+        assertEquals(3, fileDataList.get(0).getScreen().getDpi());
     }
 
     private List<FileData> getFileDataList() {

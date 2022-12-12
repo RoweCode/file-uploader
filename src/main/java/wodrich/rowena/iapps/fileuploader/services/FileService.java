@@ -46,20 +46,27 @@ public class FileService {
     }
 
     public List<FileData> getFileData(int page, String filterBy, String filter, String sortBy, Boolean asc) {
-        if (page <= 0) return null;
 
-        Pageable pageable;
-        Sort sorting;
-        if (Strings.isNotEmpty(sortBy)) {
-            sorting = (asc == null || asc) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
-            pageable = PageRequest.of(page - 1, NUMBER_OF_ELEMENTS_PER_PAGE, sorting);
-        } else {
-            pageable = PageRequest.of(page - 1, NUMBER_OF_ELEMENTS_PER_PAGE);
-        }
+        if (page <= 0) return fileRepository.findAllBy(null);
+
+        Pageable pageable = getPageable(page, sortBy, asc);
         if (Strings.isEmpty(filterBy)) {
             return fileRepository.findAllBy(pageable);
         }
 
+        return getFilteredFileData(pageable, filterBy, filter);
+    }
+
+    private Pageable getPageable(int page, String sortBy, Boolean asc) {
+        if (Strings.isNotEmpty(sortBy)) {
+            Sort sorting = (asc == null || asc) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+            return PageRequest.of(page - 1, NUMBER_OF_ELEMENTS_PER_PAGE, sorting);
+        } else {
+            return PageRequest.of(page - 1, NUMBER_OF_ELEMENTS_PER_PAGE);
+        }
+    }
+
+    private List<FileData> getFilteredFileData(Pageable pageable, String filterBy, String filter) {
         return switch (filterBy) {
             case "name" -> fileRepository.findAllByName(filter, pageable);
             case "newspaperName" -> fileRepository.findAllByNewspaper_Name(filter, pageable);
