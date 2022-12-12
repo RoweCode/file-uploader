@@ -23,7 +23,7 @@ in the application.properties <br>
 
 --------------------------------------------------------------------------------------------------
 
-## Service endpoint overview:
+## Service endpoints overview:
 
 ### Upload the xml file:
 ```` POST http://localhost:8080/files ```` with file in the body
@@ -33,14 +33,14 @@ in the application.properties <br>
 #### Example:
 ```` GET http://localhost:8080/files/pages/1?filterBy=screenDpi&filter=160&asc=false&sortBy=screenHeight ````
 
-> Possible sortings: "name", "uploadedAt", "newspaperName", "screenWidth", "screenHeight", "screenDpi"
->
-> Possible filters: "name", "newspaperName", "screenWidth", "screenHeight", "screenDpi"
+Possible sorting: "name", "uploadedAt", "newspaperName", "screenWidth", "screenHeight", "screenDpi"
+<br>
+Possible filters: "name", "newspaperName", "screenWidth", "screenHeight", "screenDpi"
 
 --------------------------------------------------------------------------------------------------
 
 ### How to run the tests:
 #### For running the db on localhost, (i.e. to run the tests) you need to run before:
-````$> docker-compose -f docker-compose-local.yaml up```` <br>
-````$> mvn test ````
+```` $> docker-compose -f docker-compose-local.yaml up ```` <br>
+```` $> mvn test ````
 --------------------------------------------------------------------------------------------------
