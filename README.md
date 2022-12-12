@@ -43,4 +43,3 @@ Possible filters: "name", "newspaperName", "screenWidth", "screenHeight", "scree
 #### For running the db on localhost, (i.e. to run the tests) you need to run before:
 ```` $> docker-compose -f docker-compose-local.yaml up ```` <br>
 ```` $> mvn test ````
---------------------------------------------------------------------------------------------------
