@@ -1,5 +1,20 @@
-version: "3"
+version: "2.1"
 services:
+  file-uploader-server:
+    container_name: file-uploader-server
+    build:
+      context: docker-product-server
+      dockerfile: Dockerfile
+    image: file-uploader:latest
+    ports:
+      - 8080:8080
+    links:
+      - "db:database"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - spring-cloud-network
   db:
     image: postgres
     container_name: file-uploader-postgres
@@ -12,6 +27,15 @@ services:
       - 5432:5432
     volumes:
       - pgdata:/var/lib/postgresql/data
-#    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - spring-cloud-network
+networks:
+  spring-cloud-network:
+    driver: bridge
 volumes:
   pgdata:
