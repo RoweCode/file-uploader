@@ -28,18 +28,20 @@ class XMLFileValidatorUnitTest {
     void testIsValidAgainstXSDSchema_Success() throws IOException {
         MockMultipartFile file = getMockMultipartFile(VALID_TEST_FILE_XML);
         // when
-        boolean isValid = xmlFileValidator.isValidAgainstSchema(file, XMLFileValidator.EPAPER_REQUEST_XSD_SCHEMA_PATH);
+        boolean isValid = xmlFileValidator.isValidAgainstSchema(
+                file, XMLFileValidator.EPAPER_REQUEST_XSD_SCHEMA_PATH);
 
         // then
         assertTrue(isValid);
     }
 
     @Test
-    void testIsValidAgainstXSDSchema_InValidOrderOfElements() throws IOException {
+    void testIsValidAgainstXSDSchema_InvalidOrderOfElements() throws IOException {
         MockMultipartFile file = getMockMultipartFile(INVALID_ORDER_TEST_FILE_XML);
 
         // when
-        boolean isValid = xmlFileValidator.isValidAgainstSchema(file, XMLFileValidator.EPAPER_REQUEST_XSD_SCHEMA_PATH);
+        boolean isValid = xmlFileValidator.isValidAgainstSchema
+                (file, XMLFileValidator.EPAPER_REQUEST_XSD_SCHEMA_PATH);
 
         // then
         assertFalse(isValid);
@@ -50,7 +52,8 @@ class XMLFileValidatorUnitTest {
         MockMultipartFile file = getMockMultipartFile(MISSING_ELEMENT_TEST_FILE_XML);
 
         // when
-        boolean isValid = xmlFileValidator.isValidAgainstSchema(file, XMLFileValidator.EPAPER_REQUEST_XSD_SCHEMA_PATH);
+        boolean isValid = xmlFileValidator.isValidAgainstSchema(
+                file, XMLFileValidator.EPAPER_REQUEST_XSD_SCHEMA_PATH);
 
         // then
         assertFalse(isValid);
@@ -61,7 +64,8 @@ class XMLFileValidatorUnitTest {
         MockMultipartFile file = getMockMultipartFile(MISSING_REQUIRED_ATTRIBUTE_TEST_FILE_XML);
 
         // when
-        boolean isValid = xmlFileValidator.isValidAgainstSchema(file, XMLFileValidator.EPAPER_REQUEST_XSD_SCHEMA_PATH);
+        boolean isValid = xmlFileValidator.isValidAgainstSchema(
+                file, XMLFileValidator.EPAPER_REQUEST_XSD_SCHEMA_PATH);
 
         // then
         assertFalse(isValid);
@@ -72,7 +76,8 @@ class XMLFileValidatorUnitTest {
         MockMultipartFile file = getMockMultipartFile(WRONG_ATTRIBUTE_DATATYPE_TEST_FILE_XML);
 
         // when
-        boolean isValid = xmlFileValidator.isValidAgainstSchema(file, XMLFileValidator.EPAPER_REQUEST_XSD_SCHEMA_PATH);
+        boolean isValid = xmlFileValidator.isValidAgainstSchema(
+                file, XMLFileValidator.EPAPER_REQUEST_XSD_SCHEMA_PATH);
 
         // then
         assertFalse(isValid);

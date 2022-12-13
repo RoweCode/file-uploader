@@ -47,7 +47,7 @@ class FileServiceUnitTest {
     FileRepository fileRepository;
 
     @Test
-    void testStoreFileDateSuccess() {
+    void testStoreFileDataSuccess() {
 
         when(screenRepository.findByWidthAndHeightAndDpi(1,2,3)).thenReturn(null);
 
@@ -67,7 +67,8 @@ class FileServiceUnitTest {
                 .thenReturn(getFileDataList());
 
         // when
-        List<FileData> fileDataList = fileService.getFileData(1, null, null, null, null);
+        List<FileData> fileDataList = fileService.getFileData(
+                1, null, null, null, null);
 
         // then
         assertNotNull(fileDataList);
@@ -77,12 +78,13 @@ class FileServiceUnitTest {
     }
 
     @Test
-    void testGetFileData_PageNumberTooLowReturnsAllFiles() {
+    void testGetFileData_InvalidPageNumberReturnsAllFiles() {
         when(fileRepository.findAllBy(null))
                 .thenReturn(getFileDataList());
 
         // when
-        List<FileData> fileDataList = fileService.getFileData(0, null, null, null, null);
+        List<FileData> fileDataList = fileService.getFileData(
+                0, null, null, null, null);
 
         // then
         assertNotNull(fileDataList);

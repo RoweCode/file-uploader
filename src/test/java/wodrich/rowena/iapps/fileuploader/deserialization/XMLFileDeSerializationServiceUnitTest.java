@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import wodrich.rowena.iapps.fileuploader.deserialization.XMLFileDeSerializationService;
 import wodrich.rowena.iapps.fileuploader.deserialization.xml.EpaperRequest;
 
 import java.io.File;

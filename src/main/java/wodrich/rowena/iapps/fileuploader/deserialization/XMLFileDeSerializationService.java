@@ -16,9 +16,11 @@ public class XMLFileDeSerializationService implements FileDeSerializationService
 
     public FileData getFileData(String fileName, byte[] fileBytes) throws IOException {
         EpaperRequest epaperRequest = deserializeObject(fileBytes);
+
         ScreenInfo screenInfo = epaperRequest.getDeviceInfo().getScreenInfo();
         Screen screen = new Screen(screenInfo.getWidth(), screenInfo.getHeight(), screenInfo.getDpi());
         String newspaperName = epaperRequest.getDeviceInfo().getAppInfo().getNewspaperName();
+
         return new FileData(fileName, ZonedDateTime.now(), screen, new Newspaper(newspaperName));
     }
 

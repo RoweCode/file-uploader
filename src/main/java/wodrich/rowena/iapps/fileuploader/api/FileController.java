@@ -39,7 +39,7 @@ public class FileController {
         this.fileService = fileService;
     }
 
-    @GetMapping({"files", "files/pages/{pageNumber}"})
+    @GetMapping("files/pages/{pageNumber}")
     public List<FileData> getFiles(
             @PathVariable(required = false) Integer pageNumber,
             @RequestParam(required = false) String filterBy,
